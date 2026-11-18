@@ -125,12 +125,17 @@
         .selected-date-title { font-size: 1.02rem; font-weight: bold; margin-bottom: 10px; color: var(--primary); }
         .empty-msg { text-align: center; padding: 36px 16px; color: #666; background: white; border-radius: 12px; }
 
+        /* 하단 카피라이터 및 방문자 카운터 영역 */
         .footer-copyright {
-            text-align: center;
-            font-size: 0.82rem;
-            color: #555;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: #666;
             margin-top: 30px;
-            padding: 14px 0;
+            padding: 14px 4px;
             border-top: 1px solid #ddd;
         }
         .footer-brand {
@@ -140,9 +145,20 @@
             text-decoration: underline;
             text-underline-offset: 3px;
         }
-        .footer-brand:hover {
-            color: #114e27;
+        .footer-brand:hover { color: #114e27; }
+
+        /* 방문자 카운터 스타일 (우측 귀퉁이 배치) */
+        .visitor-counter {
+            display: flex;
+            gap: 10px;
+            background: #eef3f0;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            color: #333;
+            border: 1px solid #d0e1d7;
         }
+        .visitor-counter span { font-weight: bold; color: var(--primary); }
 
         #storyModal {
             display: none;
@@ -192,7 +208,7 @@
             font-size: 0.92rem;
             color: #333;
             line-height: 1.6;
-            white-space: pre-line; /* txt 파일 줄바꿈 그대로 반영 */
+            white-space: pre-line;
         }
 
         .print-header { display: none; }
@@ -245,6 +261,7 @@
             .container { padding: 8px 6px; }
             .calendar-box { padding: 10px 4px; border-radius: 8px; }
             .cal-span-bar { font-size: 0.68rem; padding: 2px 3px; letter-spacing: -0.6px; }
+            .footer-copyright { flex-direction: column; align-items: center; text-align: center; }
         }
     </style>
 </head>
@@ -318,9 +335,14 @@
         </div>
     </div>
 
-    <!-- 페이지 하단 카피라이터 -->
+    <!-- 페이지 하단 카피라이터 및 방문자 카운터 -->
     <div class="footer-copyright">
-        © <span class="footer-brand" onclick="openStoryModal()">물구나무 (MULGUNAMU)</span>. All Rights Reserved.
+        <div>© <span class="footer-brand" onclick="openStoryModal()">물구나무 (MULGUNAMU)</span>. All Rights Reserved.</div>
+        <div class="visitor-counter">
+            <span>Today: <b id="visitorToday">-</b></span>
+            <span>|</span>
+            <span>Total: <b id="visitorTotal">-</b></span>
+        </div>
     </div>
 </div>
 
@@ -360,6 +382,28 @@
 
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
     document.getElementById('printDateDisplay').innerText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
+
+    // 방문자 카운터 불러오기 (CountAPI 연동)
+    async function initVisitorCounter() {
+        const namespace = 'yanggu-agri-mulgunamu'; // 고유 식별 이름
+        const todayKey = 'today_' + new Date().toISOString().slice(0, 10); // 오늘 날짜별 키 (예: today_2026-11-18)
+
+        try {
+            // 1. 전체 누적(Total) 증가 및 조회
+            const totalRes = await fetch(`https://api.countapi.xyz/hit/${namespace}/total`);
+            const totalData = await totalRes.json();
+            document.getElementById('visitorTotal').innerText = totalData.value.toLocaleString();
+
+            // 2. 일일 방문자(Today) 증가 및 조회
+            const todayRes = await fetch(`https://api.countapi.xyz/hit/${namespace}/${todayKey}`);
+            const todayData = await todayRes.json();
+            document.getElementById('visitorToday').innerText = todayData.value.toLocaleString();
+        } catch (e) {
+            // 외부 API 차단 환경일 때의 예외 처리
+            document.getElementById('visitorToday').innerText = '1';
+            document.getElementById('visitorTotal').innerText = '1';
+        }
+    }
 
     // story.txt 파일을 비동기로 불러와 모달에 채우는 함수
     async function openStoryModal() {
@@ -687,6 +731,7 @@
     }
 
     loadExcelData();
+    initVisitorCounter(); // 방문자 카운터 실행
 </script>
 </body>
 </html>
