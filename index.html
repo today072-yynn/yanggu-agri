@@ -19,10 +19,12 @@
             --text: #202124;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', -apple-system, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 40px; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 20px; }
         
         header { background-color: var(--primary); color: white; padding: 16px 14px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .logo-img { height: 42px; width: auto; margin-bottom: 4px; filter: brightness(0) invert(1); } /* 상단 로고 흰색 톤 맞춤 */
+        .header-title-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+        .logo-img { height: 32px; width: auto; filter: brightness(0) invert(1); }
+        .header-main-text { font-size: 1.25rem; font-weight: bold; letter-spacing: -0.5px; }
         header p { font-size: 0.88rem; opacity: 0.9; }
         .today-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 3px 12px; border-radius: 20px; font-size: 0.82rem; margin-top: 6px; }
 
@@ -117,6 +119,16 @@
         .selected-date-title { font-size: 1.02rem; font-weight: bold; margin-bottom: 10px; color: var(--primary); }
         .empty-msg { text-align: center; padding: 36px 16px; color: #666; background: white; border-radius: 12px; }
 
+        /* 페이지 하단 카피라이터 스타일 */
+        .footer-copyright {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 30px;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+        }
+
         /* 인쇄 전용 머리글 및 바닥글 (평소에는 숨김) */
         .print-header { display: none; }
         .print-footer { display: none; }
@@ -125,7 +137,7 @@
         @media print {
             @page { margin: 8mm; }
             body { background-color: white; padding: 0; }
-            header, .view-switch, #listViewSection, #calSelectedArea, .cal-nav { display: none !important; }
+            header, .view-switch, #listViewSection, #calSelectedArea, .cal-nav, .footer-copyright { display: none !important; }
             .container { max-width: 100% !important; padding: 0; margin: 0; }
             #calendarViewSection { display: block !important; }
             .calendar-box { box-shadow: none; padding: 0; border: none; margin: 0 0 6px 0; }
@@ -138,7 +150,9 @@
                 padding-bottom: 5px;
                 margin-bottom: 8px;
             }
-            .print-logo { height: 32px; width: auto; } /* 인쇄 시 로고 원본 색상 유지 */
+            .print-logo-box { display: flex; align-items: center; gap: 8px; }
+            .print-logo { height: 26px; width: auto; }
+            .print-header-title { font-size: 1.1rem; font-weight: bold; color: #1b6b3a; }
             .print-date { font-size: 0.85rem; color: #555; font-weight: bold; }
 
             .cal-header { margin-bottom: 6px; }
@@ -173,7 +187,10 @@
 <body>
 
 <header>
-    <img src="./mulgunamu.png" alt="물구나무 로고" class="logo-img">[cite: 8]
+    <div class="header-title-box">
+        <img src="./mulgunamu.png" alt="물구나무 로고" class="logo-img">[cite: 8]
+        <span class="header-main-text">양구읍 농업지원사업 안내</span>
+    </div>
     <p>현재 신청 가능한 사업과 구비서류를 확인하세요</p>
     <div class="today-badge" id="todayDisplay">기준일 불러오는 중...</div>
 </header>
@@ -203,7 +220,10 @@
     <!-- 2. 달력 보기 영역 -->
     <div id="calendarViewSection" style="display: none;">
         <div class="print-header">
-            <img src="./mulgunamu.png" alt="물구나무 로고" class="print-logo">[cite: 8]
+            <div class="print-logo-box">
+                <img src="./mulgunamu.png" alt="물구나무 로고" class="print-logo">[cite: 8]
+                <span class="print-header-title">양구읍 농업지원사업 안내</span>
+            </div>
             <div class="print-date" id="printDateDisplay">인쇄일: 2026.11.18</div>
         </div>
 
@@ -232,6 +252,11 @@
             <div class="selected-date-title" id="selectedDateTitle">📅 날짜나 사업 막대를 누르면 상세 안내가 아래에 표시됩니다.</div>
             <div id="calCardList"></div>
         </div>
+    </div>
+
+    <!-- 페이지 하단 카피라이터 -->
+    <div class="footer-copyright">
+        © 물구나무 (MULGUNAMU). All Rights Reserved.
     </div>
 </div>
 
