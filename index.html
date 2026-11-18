@@ -61,10 +61,11 @@
         .call-link { color: var(--primary); font-weight: bold; text-decoration: none; border-bottom: 1px dotted var(--primary); }
 
         .calendar-box { background: white; border-radius: 12px; padding: 12px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; flex-wrap: wrap; gap: 8px; }
         .cal-title { font-size: 1.15rem; font-weight: bold; color: #111; }
         .cal-nav { display: flex; gap: 4px; }
         .cal-nav button { padding: 5px 10px; border: 1px solid #dadce0; background: #f8f9fa; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        .print-btn { background: var(--primary) !important; color: white !important; border-color: var(--primary) !important; }
 
         .cal-table { border-top: 1px solid #e0e0e0; border-left: 1px solid #e0e0e0; }
         .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); }
@@ -100,10 +101,23 @@
             text-overflow: ellipsis;
             cursor: pointer;
             z-index: 2;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .selected-date-title { font-size: 1.02rem; font-weight: bold; margin-bottom: 10px; color: var(--primary); }
         .empty-msg { text-align: center; padding: 36px 16px; color: #666; background: white; border-radius: 12px; }
+
+        /* 인쇄 시 적용되는 스타일 (달력 페이지만 깔끔하게 출력) */
+        @media print {
+            body { background-color: white; padding: 0; }
+            header, .view-switch, #listViewSection, #calSelectedArea, .cal-nav { display: none !important; }
+            .container { max-width: 100% !important; padding: 0; margin: 0; }
+            #calendarViewSection { display: block !important; }
+            .calendar-box { box-shadow: none; padding: 0; border: none; }
+            .cal-bg-cell { min-height: 95px !important; }
+            .cal-span-bar { font-size: 0.7rem !important; }
+        }
 
         @media (max-width: 480px) {
             .container { padding: 8px 6px; }
@@ -151,6 +165,7 @@
                     <button onclick="changeMonth(-1)">◀ 이전</button>
                     <button onclick="goTodayMonth()">오늘</button>
                     <button onclick="changeMonth(1)">다음 ▶</button>
+                    <button class="print-btn" onclick="window.print()">🖨️ 달력 인쇄</button>
                 </div>
             </div>
             <div class="cal-table" id="calTable"></div>
@@ -173,16 +188,15 @@
     let viewMonth = now.getMonth();
     let selectedDate = today;
 
-    // 사업별 고유 파스텔 색상 팔레트
     const pastelColors = [
-        { bg: '#e3f2fd', text: '#0d47a1', border: '#1976d2' }, // 연한 파랑
-        { bg: '#e8f5e9', text: '#1b5e20', border: '#388e3c' }, // 연한 초록
-        { bg: '#fff3e0', text: '#e65100', border: '#f57c00' }, // 연한 주황
-        { bg: '#f3e5f5', text: '#4a148c', border: '#7b1fa2' }, // 연한 보라
-        { bg: '#e0f7fa', text: '#006064', border: '#00838f' }, // 연한 청록
-        { bg: '#fff9c4', text: '#f57f17', border: '#fbc02d' }, // 연한 노랑
-        { bg: '#fce4ec', text: '#880e4f', border: '#c2185b' }, // 연한 핑크
-        { bg: '#efebe9', text: '#3e2723', border: '#5d4037' }  // 연한 갈색
+        { bg: '#e3f2fd', text: '#0d47a1', border: '#1976d2' },
+        { bg: '#e8f5e9', text: '#1b5e20', border: '#388e3c' },
+        { bg: '#fff3e0', text: '#e65100', border: '#f57c00' },
+        { bg: '#f3e5f5', text: '#4a148c', border: '#7b1fa2' },
+        { bg: '#e0f7fa', text: '#006064', border: '#00838f' },
+        { bg: '#fff9c4', text: '#f57f17', border: '#fbc02d' },
+        { bg: '#fce4ec', text: '#880e4f', border: '#c2185b' },
+        { bg: '#efebe9', text: '#3e2723', border: '#5d4037' }
     ];
 
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
@@ -253,13 +267,11 @@
                     }
                 }
 
-                // 마감일 포맷 (예: (~11.30까지))
                 let endMonthDay = '';
                 if (end) {
                     endMonthDay = ` (~${end.getMonth()+1}.${end.getDate()}까지)`;
                 }
 
-                // 고유 색상 순환 배정
                 const colorTheme = pastelColors[idx % pastelColors.length];
 
                 return {
@@ -445,7 +457,7 @@
             let barsHtml = placedBars.map(b => {
                 const p = b.project;
                 const c = p.colorTheme;
-                const displayTitle = p.title + p.endMonthDay; // 제목 옆에 마감일 추가
+                const displayTitle = p.title + p.endMonthDay;
 
                 return `<div class="cal-span-bar" style="grid-column: ${b.startCol} / ${b.endCol}; grid-row: ${b.row}; background-color: ${c.bg}; color: ${c.text}; border-left: 3px solid ${c.border};" onclick="handleEventClick(${p.id})" title="${displayTitle}">${displayTitle}</div>`;
             }).join('');
