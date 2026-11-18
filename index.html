@@ -24,11 +24,10 @@
         header { background-color: var(--primary); color: white; padding: 16px 14px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-title-box { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
         
-        /* 물구나무 로고 크기 축소 및 색상 조정용 스타일 (filter로 색상 변경 가능) */
         .logo-img { 
             height: 24px; 
             width: auto; 
-            filter: brightness(0) invert(1); /* 현재 순백색 (원하시는 색으로 변경하려면 이 필터를 수정하거나 제거하세요) */
+            filter: brightness(0) invert(1);
         }
         
         .header-main-text { font-size: 1.2rem; font-weight: bold; letter-spacing: -0.5px; }
@@ -126,14 +125,80 @@
         .selected-date-title { font-size: 1.02rem; font-weight: bold; margin-bottom: 10px; color: var(--primary); }
         .empty-msg { text-align: center; padding: 36px 16px; color: #666; background: white; border-radius: 12px; }
 
+        /* 하단 카피라이터 스타일 (클릭 가능하도록 지정) */
         .footer-copyright {
             text-align: center;
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 0.82rem;
+            color: #555;
             margin-top: 30px;
-            padding: 10px 0;
+            padding: 14px 0;
             border-top: 1px solid #ddd;
         }
+        .footer-brand {
+            font-weight: bold;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .footer-brand:hover {
+            color: #114e27;
+        }
+
+        /* 비하인드 스토리 팝업(모달) 스타일 */
+        #storyModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-header {
+            background: var(--primary);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { font-size: 1.15rem; }
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 0.92rem;
+            color: #333;
+            line-height: 1.6;
+        }
+        .story-section { margin-bottom: 20px; }
+        .story-section h4 { color: var(--primary); font-size: 1.02rem; margin-bottom: 8px; border-left: 3px solid var(--primary); padding-left: 8px; }
+        .story-section p, .story-section ul { margin-bottom: 8px; padding-left: 4px; }
+        .story-section ul { list-style-type: disc; list-style-position: inside; }
 
         .print-header { display: none; }
         .print-footer { display: none; }
@@ -155,7 +220,7 @@
                 margin-bottom: 8px;
             }
             .print-logo-box { display: flex; align-items: center; gap: 8px; }
-            .print-logo { height: 22px; width: auto; filter: none; } /* 인쇄 시 원본 색상 유지 */
+            .print-logo { height: 22px; width: auto; filter: none; }
             .print-header-title { font-size: 1.1rem; font-weight: bold; color: #1b6b3a; }
             .print-date { font-size: 0.85rem; color: #555; font-weight: bold; }
 
@@ -258,9 +323,37 @@
         </div>
     </div>
 
-    <!-- 페이지 하단 카피라이터 -->
+    <!-- 페이지 하단 카피라이터 (클릭 시 비하인드 스토리 오픈) -->
     <div class="footer-copyright">
-        © 물구나무 (MULGUNAMU). All Rights Reserved.
+        © <span class="footer-brand" onclick="openStoryModal()">물구나무 (MULGUNAMU)</span>. All Rights Reserved.
+    </div>
+</div>
+
+<!-- 제작 비하인드 & 버전 히스토리 모달 창 -->
+<div id="storyModal" onclick="closeStoryModalOutside(event)">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>🌱 제작 비하인드 & 버전 히스토리</h3>
+            <button class="modal-close" onclick="closeStoryModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="story-section">
+                <h4>💡 제작 비하인드 스토리</h4>
+                <p>농업인들께서 복잡하고 시일이 촉박한 각종 지원사업 일정을 놓치지 않고 한눈에 파악하실 수 있도록 기획된 행정 업무 효율화 프로젝트입니다.</p>
+                <p>기존의 정적인 문서 안내 방식에서 벗어나, 엑셀 데이터 연동과 웹 기반 캘린더 인터페이스를 결합하여 현업(읍사무소 산업팀)에서 실질적인 도움이 되도록 제작되었습니다.</p>
+            </div>
+
+            <div class="story-section">
+                <h4>🚀 버전별 주요 기능 추가 사항</h4>
+                <ul>
+                    <li><strong>v1.0 (초안 기획):</strong> 엑셀 기반 농업지원사업 데이터 파싱 및 목록형 조회 기능 구현</li>
+                    <li><strong>v1.2 (캘린더 도입):</strong> 월간 일정표 시각화 및 기간별(Span) 일정 바 자동 배치 알고리즘 적용</li>
+                    <li><strong>v1.5 (모바일 최적화):</strong> 반응형 UI 개선 및 현장 안내용 고해상도 QR코드 연동</li>
+                    <li><strong>v2.0 (인쇄 전용 최적화):</strong> A4 용지 출력 시 캘린더와 안내문구가 깔끔하게 정돈되도록 인쇄 스타일 프리셋 완성</li>
+                    <li><strong>v2.3 (현재 버전):</strong> '물구나무' 브랜드 로고 및 하단 인터랙티브 비하인드 스토리/버전 히스토리 뷰어 탑재</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -287,6 +380,19 @@
 
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
     document.getElementById('printDateDisplay').innerText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
+
+    // 비하인드 모달 제어 함수
+    function openStoryModal() {
+        document.getElementById('storyModal').style.display = 'flex';
+    }
+    function closeStoryModal() {
+        document.getElementById('storyModal').style.display = 'none';
+    }
+    function closeStoryModalOutside(event) {
+        if (event.target === document.getElementById('storyModal')) {
+            closeStoryModal();
+        }
+    }
 
     function switchView(mode) {
         if (mode === 'list') {
