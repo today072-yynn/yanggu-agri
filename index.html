@@ -34,27 +34,6 @@
 
         .container { max-width: 780px; margin: 0 auto; padding: 12px; }
 
-        /* 홈 화면 추가 버튼 스타일 */
-        .add-to-home-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-            background: linear-gradient(135deg, #1b6b3a, #278a50);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.98rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 6px rgba(27, 107, 58, 0.25);
-            transition: 0.2s;
-        }
-        .add-to-home-btn:hover { background: linear-gradient(135deg, #165830, #1b6b3a); }
-
         .view-switch { display: flex; background: #e0e4e8; padding: 4px; border-radius: 10px; margin-bottom: 14px; }
         .view-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 8px; font-size: 0.98rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
         .view-btn.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
@@ -162,6 +141,7 @@
             align-items: center;
             gap: 4px;
         }
+        /* 하단 물구나무 로고 크기를 글자 크기만큼 맞춤 */
         .footer-logo-link {
             display: inline-flex;
             align-items: center;
@@ -174,7 +154,9 @@
             opacity: 0.8;
             transition: opacity 0.2s;
         }
-        .footer-logo-img:hover { opacity: 1; }
+        .footer-logo-img:hover {
+            opacity: 1;
+        }
 
         .visitor-counter {
             display: flex;
@@ -188,7 +170,7 @@
         }
         .visitor-counter span { font-weight: bold; color: var(--primary); }
 
-        #storyModal, #installModal {
+        #storyModal {
             display: none;
             position: fixed;
             inset: 0;
@@ -201,7 +183,7 @@
         .modal-content {
             background: white;
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             max-height: 85vh;
             border-radius: 14px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
@@ -245,7 +227,7 @@
         @media print {
             @page { margin: 8mm; }
             body { background-color: white; padding: 0; }
-            header, .view-switch, #listViewSection, #calSelectedArea, .cal-nav, .footer-copyright, .add-to-home-btn { display: none !important; }
+            header, .view-switch, #listViewSection, #calSelectedArea, .cal-nav, .footer-copyright { display: none !important; }
             .container { max-width: 100% !important; padding: 0; margin: 0; }
             #calendarViewSection { display: block !important; }
             .calendar-box { box-shadow: none; padding: 0; border: none; margin: 0 0 6px 0; }
@@ -304,11 +286,6 @@
 </header>
 
 <div class="container">
-    <!-- 스마트폰 홈 화면 바로가기 추가 버튼 -->
-    <button class="add-to-home-btn" onclick="addToHomePrompt()">
-        📱 스마트폰 바탕화면에 바로가기 아이콘 추가하기
-    </button>
-
     <div class="view-switch">
         <button class="view-btn active" id="btnListView" onclick="switchView('list')">📋 목록으로 보기</button>
         <button class="view-btn" id="btnCalView" onclick="switchView('calendar')">📅 달력으로 보기</button>
@@ -367,7 +344,7 @@
         </div>
     </div>
 
-    <!-- 페이지 하단 카피라이터 -->
+    <!-- 페이지 하단 카피라이터 (물구나무 로고 링크 및 방문자 카운터) -->
     <div class="footer-copyright">
         <div class="footer-left">
             <span>©</span>
@@ -384,7 +361,7 @@
     </div>
 </div>
 
-<!-- 비하인드 스토리 팝업 창 -->
+<!-- 비하인드 스토리 팝업(모달) 창 -->
 <div id="storyModal" onclick="closeStoryModalOutside(event)">
     <div class="modal-content">
         <div class="modal-header">
@@ -397,23 +374,9 @@
     </div>
 </div>
 
-<!-- 홈 화면 추가 안내 팝업 창 -->
-<div id="installModal" onclick="closeInstallModalOutside(event)">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>📱 스마트폰 홈 화면에 바로가기 추가</h3>
-            <button class="modal-close" onclick="closeInstallModal()">&times;</button>
-        </div>
-        <div class="modal-body" id="installModalBody">
-            안내 내용을 불러오는 중입니다...
-        </div>
-    </div>
-</div>
-
 <script>
     let allProjects = [];
     let currentFilter = 'open';
-    let deferredPrompt = null; // 안드로이드 설치 이벤트 저장 변수
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -434,50 +397,6 @@
 
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
     document.getElementById('printDateDisplay').innerText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
-
-    // 안드로이드 설치 프롬프트 가로채기
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-
-    // 홈 화면 추가 버튼 클릭 시 동작
-    function addToHomePrompt() {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const modal = document.getElementById('installModal');
-        const modalBody = document.getElementById('installModalBody');
-
-        if (deferredPrompt) {
-            // 안드로이드 크롬 등에서 즉시 설치 팝업 띄우기 가능할 때
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                deferredPrompt = null;
-            });
-        } else if (isIOS) {
-            // 아이폰(사파리) 안내
-            modalBody.innerHTML = `<b>🍎 아이폰(Safari) 이용자 안내</b><br><br>
-1. 사파리(Safari) 하단 중앙의 <b>[공유 버튼 (사각형에 위 화살표 ⎋)]</b>을 누르세요.<br>
-2. 메뉴를 아래로 내려 <b>[홈 화면에 추가 ➕]</b>를 선택하세요.<br>
-3. 우측 상단의 <b>[추가]</b>를 누르면 바탕화면에 물구나무 로고 아이콘이 생성됩니다!`;
-            modal.style.display = 'flex';
-        } else {
-            // 안드로이드 삼성 인터넷 또는 일반 브라우저 안내
-            modalBody.innerHTML = `<b>🤖 안드로이드 스마트폰 이용자 안내</b><br><br>
-1. 브라우저 우측 상단(또는 하단)의 <b>[메뉴 버튼 (점 3개 ⁝)]</b>을 누르세요.<br>
-2. 메뉴에서 <b>[홈 화면에 추가]</b> 또는 <b>[앱 설치]</b>를 선택하세요.<br>
-3. 안내에 따라 추가하시면 바탕화면에 바로가기 아이콘이 생성됩니다!`;
-            modal.style.display = 'flex';
-        }
-    }
-
-    function closeInstallModal() {
-        document.getElementById('installModal').style.display = 'none';
-    }
-    function closeInstallModalOutside(event) {
-        if (event.target === document.getElementById('installModal')) {
-            closeInstallModal();
-        }
-    }
 
     // 방문자 카운터 불러오기 (CountAPI 연동)
     async function initVisitorCounter() {
