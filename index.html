@@ -22,9 +22,16 @@
         body { background-color: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 20px; }
         
         header { background-color: var(--primary); color: white; padding: 16px 14px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-title-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
-        .logo-img { height: 32px; width: auto; filter: brightness(0) invert(1); }
-        .header-main-text { font-size: 1.25rem; font-weight: bold; letter-spacing: -0.5px; }
+        .header-title-box { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+        
+        /* 물구나무 로고 크기 축소 및 색상 조정용 스타일 (filter로 색상 변경 가능) */
+        .logo-img { 
+            height: 24px; 
+            width: auto; 
+            filter: brightness(0) invert(1); /* 현재 순백색 (원하시는 색으로 변경하려면 이 필터를 수정하거나 제거하세요) */
+        }
+        
+        .header-main-text { font-size: 1.2rem; font-weight: bold; letter-spacing: -0.5px; }
         header p { font-size: 0.88rem; opacity: 0.9; }
         .today-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 3px 12px; border-radius: 20px; font-size: 0.82rem; margin-top: 6px; }
 
@@ -119,7 +126,6 @@
         .selected-date-title { font-size: 1.02rem; font-weight: bold; margin-bottom: 10px; color: var(--primary); }
         .empty-msg { text-align: center; padding: 36px 16px; color: #666; background: white; border-radius: 12px; }
 
-        /* 페이지 하단 카피라이터 스타일 */
         .footer-copyright {
             text-align: center;
             font-size: 0.8rem;
@@ -129,11 +135,9 @@
             border-top: 1px solid #ddd;
         }
 
-        /* 인쇄 전용 머리글 및 바닥글 (평소에는 숨김) */
         .print-header { display: none; }
         .print-footer { display: none; }
 
-        /* 인쇄 시 적용되는 스타일 */
         @media print {
             @page { margin: 8mm; }
             body { background-color: white; padding: 0; }
@@ -151,7 +155,7 @@
                 margin-bottom: 8px;
             }
             .print-logo-box { display: flex; align-items: center; gap: 8px; }
-            .print-logo { height: 26px; width: auto; }
+            .print-logo { height: 22px; width: auto; filter: none; } /* 인쇄 시 원본 색상 유지 */
             .print-header-title { font-size: 1.1rem; font-weight: bold; color: #1b6b3a; }
             .print-date { font-size: 0.85rem; color: #555; font-weight: bold; }
 
@@ -188,7 +192,7 @@
 
 <header>
     <div class="header-title-box">
-        <img src="./mulgunamu.png" alt="물구나무 로고" class="logo-img">[cite: 8]
+        <img src="./mulgunamu.png" alt="물구나무 로고" class="logo-img">
         <span class="header-main-text">양구읍 농업지원사업 안내</span>
     </div>
     <p>현재 신청 가능한 사업과 구비서류를 확인하세요</p>
@@ -221,7 +225,7 @@
     <div id="calendarViewSection" style="display: none;">
         <div class="print-header">
             <div class="print-logo-box">
-                <img src="./mulgunamu.png" alt="물구나무 로고" class="print-logo">[cite: 8]
+                <img src="./mulgunamu.png" alt="물구나무 로고" class="print-logo">
                 <span class="print-header-title">양구읍 농업지원사업 안내</span>
             </div>
             <div class="print-date" id="printDateDisplay">인쇄일: 2026.11.18</div>
@@ -241,7 +245,7 @@
         </div>
 
         <div class="print-footer">
-            <img src="./yg-nong-QR.jpg" alt="농업지원사업 안내 QR코드" class="print-qr-img">[cite: 6]
+            <img src="./yg-nong-QR.jpg" alt="농업지원사업 안내 QR코드" class="print-qr-img">
             <div class="print-qr-text">
                 <h4>🌾 "농업 지원사업, 시기를 놓치지 마세요!"</h4>
                 <p>• 본 자료는 인쇄된 날짜 기준으로 작성되었습니다.<br>• 사업별 마감일과 추가되는 최신 정보는 핸드폰 카메라로 QR코드를 비춰보시면 실시간으로 바로 확인하실 수 있습니다. (문의: 양구읍사무소 산업팀)</p>
