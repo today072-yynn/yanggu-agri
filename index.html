@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>양구읍 농업지원사업 안내</title>
+    
+    <!-- 모바일 홈 화면 추가 시 나타날 전용 아이콘 설정 -->
+    <link rel="apple-touch-icon" href="./mulgunamu.png">
+    <link rel="icon" type="image/png" href="./mulgunamu.png">
+
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
@@ -125,7 +130,6 @@
         .selected-date-title { font-size: 1.02rem; font-weight: bold; margin-bottom: 10px; color: var(--primary); }
         .empty-msg { text-align: center; padding: 36px 16px; color: #666; background: white; border-radius: 12px; }
 
-        /* 하단 카피라이터 및 방문자 카운터 영역 */
         .footer-copyright {
             display: flex;
             justify-content: space-between;
@@ -147,7 +151,6 @@
         }
         .footer-brand:hover { color: #114e27; }
 
-        /* 방문자 카운터 스타일 (우측 귀퉁이 배치) */
         .visitor-counter {
             display: flex;
             gap: 10px;
@@ -385,27 +388,23 @@
 
     // 방문자 카운터 불러오기 (CountAPI 연동)
     async function initVisitorCounter() {
-        const namespace = 'yanggu-agri-mulgunamu'; // 고유 식별 이름
-        const todayKey = 'today_' + new Date().toISOString().slice(0, 10); // 오늘 날짜별 키 (예: today_2026-11-18)
+        const namespace = 'yanggu-agri-mulgunamu';
+        const todayKey = 'today_' + new Date().toISOString().slice(0, 10);
 
         try {
-            // 1. 전체 누적(Total) 증가 및 조회
             const totalRes = await fetch(`https://api.countapi.xyz/hit/${namespace}/total`);
             const totalData = await totalRes.json();
             document.getElementById('visitorTotal').innerText = totalData.value.toLocaleString();
 
-            // 2. 일일 방문자(Today) 증가 및 조회
             const todayRes = await fetch(`https://api.countapi.xyz/hit/${namespace}/${todayKey}`);
             const todayData = await todayRes.json();
             document.getElementById('visitorToday').innerText = todayData.value.toLocaleString();
         } catch (e) {
-            // 외부 API 차단 환경일 때의 예외 처리
             document.getElementById('visitorToday').innerText = '1';
             document.getElementById('visitorTotal').innerText = '1';
         }
     }
 
-    // story.txt 파일을 비동기로 불러와 모달에 채우는 함수
     async function openStoryModal() {
         const modalBody = document.getElementById('storyModalBody');
         document.getElementById('storyModal').style.display = 'flex';
@@ -731,7 +730,7 @@
     }
 
     loadExcelData();
-    initVisitorCounter(); // 방문자 카운터 실행
+    initVisitorCounter();
 </script>
 </body>
 </html>
