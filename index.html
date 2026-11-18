@@ -28,14 +28,7 @@
         
         header { background-color: var(--primary); color: white; padding: 16px 14px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-title-box { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
-        
-        .logo-img { 
-            height: 24px; 
-            width: auto; 
-            filter: brightness(0) invert(1);
-        }
-        
-        .header-main-text { font-size: 1.2rem; font-weight: bold; letter-spacing: -0.5px; }
+        .header-main-text { font-size: 1.25rem; font-weight: bold; letter-spacing: -0.5px; }
         header p { font-size: 0.88rem; opacity: 0.9; }
         .today-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 3px 12px; border-radius: 20px; font-size: 0.82rem; margin-top: 6px; }
 
@@ -130,6 +123,7 @@
         .selected-date-title { font-size: 1.02rem; font-weight: bold; margin-bottom: 10px; color: var(--primary); }
         .empty-msg { text-align: center; padding: 36px 16px; color: #666; background: white; border-radius: 12px; }
 
+        /* 하단 카피라이터 및 방문자 카운터 영역 */
         .footer-copyright {
             display: flex;
             justify-content: space-between;
@@ -142,14 +136,27 @@
             padding: 14px 4px;
             border-top: 1px solid #ddd;
         }
-        .footer-brand {
-            font-weight: bold;
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: underline;
-            text-underline-offset: 3px;
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-        .footer-brand:hover { color: #114e27; }
+        /* 하단 물구나무 로고 크기를 글자 크기만큼 맞춤 */
+        .footer-logo-link {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .footer-logo-img {
+            height: 14px;
+            width: auto;
+            vertical-align: middle;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .footer-logo-img:hover {
+            opacity: 1;
+        }
 
         .visitor-counter {
             display: flex;
@@ -233,8 +240,7 @@
                 padding-bottom: 5px;
                 margin-bottom: 8px;
             }
-            .print-logo-box { display: flex; align-items: center; gap: 8px; }
-            .print-logo { height: 22px; width: auto; filter: none; }
+            .print-logo-box { display: flex; align-items: center; gap: 6px; }
             .print-header-title { font-size: 1.1rem; font-weight: bold; color: #1b6b3a; }
             .print-date { font-size: 0.85rem; color: #555; font-weight: bold; }
 
@@ -272,7 +278,7 @@
 
 <header>
     <div class="header-title-box">
-        <img src="./mulgunamu.png" alt="물구나무 로고" class="logo-img">
+        <span style="font-size: 1.3rem;">🌾</span>
         <span class="header-main-text">양구읍 농업지원사업 안내</span>
     </div>
     <p>현재 신청 가능한 사업과 구비서류를 확인하세요</p>
@@ -305,7 +311,7 @@
     <div id="calendarViewSection" style="display: none;">
         <div class="print-header">
             <div class="print-logo-box">
-                <img src="./mulgunamu.png" alt="물구나무 로고" class="print-logo">
+                <span style="font-size: 1.1rem;">🌾</span>
                 <span class="print-header-title">양구읍 농업지원사업 안내</span>
             </div>
             <div class="print-date" id="printDateDisplay">인쇄일: 2026.11.18</div>
@@ -338,9 +344,15 @@
         </div>
     </div>
 
-    <!-- 페이지 하단 카피라이터 및 방문자 카운터 -->
+    <!-- 페이지 하단 카피라이터 (물구나무 로고 링크 및 방문자 카운터) -->
     <div class="footer-copyright">
-        <div>© <span class="footer-brand" onclick="openStoryModal()">물구나무 (MULGUNAMU)</span>. All Rights Reserved.</div>
+        <div class="footer-left">
+            <span>©</span>
+            <a class="footer-logo-link" onclick="openStoryModal()" title="제작 비하인드 보기">
+                <img src="./mulgunamu.png" alt="물구나무" class="footer-logo-img">
+            </a>
+            <span>All Rights Reserved.</span>
+        </div>
         <div class="visitor-counter">
             <span>Today: <b id="visitorToday">-</b></span>
             <span>|</span>
