@@ -147,7 +147,7 @@
             .cal-events-layer { padding-top: 20px; padding-bottom: 3px; row-gap: 1px; }
             .cal-span-bar { font-size: 0.64rem !important; padding: 1.5px 2.5px; }
 
-            /* 인쇄물 하단 QR코드 및 유도 문구 스타일 */
+            /* 인쇄물 하단 QR코드(1.5배 확대) 및 맞춤 유도 문구 스타일 */
             .print-footer {
                 display: flex !important;
                 align-items: center;
@@ -155,13 +155,13 @@
                 gap: 16px;
                 border: 2px dashed #1b6b3a;
                 border-radius: 8px;
-                padding: 8px 12px;
+                padding: 10px 14px;
                 margin-top: 10px;
                 background-color: #f9fbf9;
             }
-            .print-qr-img { width: 68px; height: 68px; }
-            .print-qr-text h4 { font-size: 0.95rem; color: #1b6b3a; margin-bottom: 2px; }
-            .print-qr-text p { font-size: 0.78rem; color: #444; line-height: 1.35; }
+            .print-qr-img { width: 102px; height: 102px; } /* 기존 68px에서 1.5배 키움 */
+            .print-qr-text h4 { font-size: 0.98rem; color: #1b6b3a; margin-bottom: 3px; font-weight: bold; }
+            .print-qr-text p { font-size: 0.8rem; color: #333; line-height: 1.4; }
         }
 
         @media (max-width: 480px) {
@@ -221,12 +221,12 @@
             <div class="cal-table" id="calTable"></div>
         </div>
 
-        <!-- 인쇄 하단 QR코드 및 안내 문구 바닥글 -->
+        <!-- 인쇄 하단 1.5배 커진 QR코드 및 맞춤 안내 문구 -->
         <div class="print-footer">
             <img src="./yg-nong-QR.jpg" alt="농업지원사업 안내 QR코드" class="print-qr-img">
             <div class="print-qr-text">
-                <h4>📱 스마트폰으로 실시간 농업사업 확인하기</h4>
-                <p>카메라를 켜고 위 QR코드를 비춰보세요!<br>지금 신청 가능한 사업 일정과 구비서류를 핸드폰으로 편하게 확인하실 수 있습니다.</p>
+                <h4>🌾 "농업 지원사업, 시기를 놓치지 마세요!"</h4>
+                <p>• 본 자료는 인쇄된 날짜 기준으로 작성되었습니다.<br>• 사업별 마감일과 추가되는 최신 정보는 핸드폰 카메라로 QR코드를 비춰보시면 실시간으로 바로 확인하실 수 있습니다. (문의: 양구읍사무소 산업팀)</p>
             </div>
         </div>
 
