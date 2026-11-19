@@ -569,9 +569,10 @@
         if (p.status === 'open') {
             if (p.dDay <= 3) {
                 cardClass = 'urgent';
-                badgeHtml = `<span class="status-badge badge-urgent">🔥 마감임박 (D-${p.dDay === 0 ? 'Day' : p.dDay})</span>`;
+                const remainText = p.dDay === 0 ? '오늘 마감' : `${p.dDay}일 남음`;
+                badgeHtml = `<span class="status-badge badge-urgent">🔥 마감임박 (${remainText})</span>`;
             } else {
-                badgeHtml = `<span class="status-badge badge-open">접수중 (D-${p.dDay})</span>`;
+                badgeHtml = `<span class="status-badge badge-open">접수중 (${p.dDay}일 남음)</span>`;
             }
         } else if (p.status === 'upcoming') {
             badgeHtml = `<span class="status-badge badge-upcoming">${p.dDay}일 후 접수시작</span>`;
