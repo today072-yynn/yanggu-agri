@@ -398,22 +398,19 @@
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
     document.getElementById('printDateDisplay').innerText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
 
-    // 방문자 카운터 불러오기 (CountAPI 연동)
+// Render 백엔드 서버와 연동된 방문자 카운터
     async function initVisitorCounter() {
-        const namespace = 'yanggu-agri-mulgunamu';
-        const todayKey = 'today_' + new Date().toISOString().slice(0, 10);
+        // 👇 아래 주소의 'your-service-name' 부분을 본인이 Render에서 만든 실제 서비스 이름으로 바꿔주세요!
+        const serverUrl = 'https://your-service-name.onrender.com/hit';
 
         try {
-            const totalRes = await fetch(`https://api.countapi.xyz/hit/${namespace}/total`);
-            const totalData = await totalRes.json();
-            document.getElementById('visitorTotal').innerText = totalData.value.toLocaleString();
-
-            const todayRes = await fetch(`https://api.countapi.xyz/hit/${namespace}/${todayKey}`);
-            const todayData = await todayRes.json();
-            document.getElementById('visitorToday').innerText = todayData.value.toLocaleString();
+            const res = await fetch(serverUrl);
+            const data = await res.json();
+            document.getElementById('visitorToday').innerText = data.today.toLocaleString();
+            document.getElementById('visitorTotal').innerText = data.total.toLocaleString();
         } catch (e) {
-            document.getElementById('visitorToday').innerText = '1';
-            document.getElementById('visitorTotal').innerText = '1';
+            document.getElementById('visitorToday').innerText = '-';
+            document.getElementById('visitorTotal').innerText = '-';
         }
     }
 
