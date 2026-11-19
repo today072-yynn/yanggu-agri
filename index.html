@@ -158,16 +158,30 @@
             opacity: 1;
         }
 
-        .visitor-counter {
+.visitor-counter {
             display: flex;
-            gap: 10px;
-            background: #eef3f0;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 0.78rem;
-            color: #333;
-            border: 1px solid #d0e1d7;
+            gap: 8px;
+            background: transparent;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            color: #b5bcc2;
+            border: none;
+            opacity: 0.55;
+            transition: opacity 0.2s;
         }
+        .visitor-counter:hover {
+            opacity: 0.9;
+        }
+        .visitor-counter span {
+            font-weight: normal;
+            color: #b5bcc2;
+        }
+        .visitor-counter b {
+            font-weight: normal;
+            color: #adb5bd;
+        }
+
         .visitor-counter span { font-weight: bold; color: var(--primary); }
 
         #storyModal {
