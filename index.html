@@ -408,22 +408,21 @@
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
     document.getElementById('printDateDisplay').innerText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
 
-// Render 백엔드 서버와 연동된 방문자 카운터
+// Cloudflare Workers + KV 연동 방문자 카운터
     async function initVisitorCounter() {
-        // 👇 아래 주소의 'your-service-name' 부분을 본인이 Render에서 만든 실제 서비스 이름으로 바꿔주세요!
-        const serverUrl = 'https://yanggu-counter-api.onrender.com/hit';
+        const serverUrl = 'https://yanggu-agri-counter.today072.workers.dev/hit';
 
         try {
-            const res = await fetch(serverUrl);
+            const res = await fetch(serverUrl, { cache: 'no-store' });
+            if (!res.ok) throw new Error('응답 오류');
             const data = await res.json();
-            document.getElementById('visitorToday').innerText = data.today.toLocaleString();
-            document.getElementById('visitorTotal').innerText = data.total.toLocaleString();
+            document.getElementById('visitorToday').innerText = Number(data.today).toLocaleString();
+            document.getElementById('visitorTotal').innerText = Number(data.total).toLocaleString();
         } catch (e) {
             document.getElementById('visitorToday').innerText = '-';
             document.getElementById('visitorTotal').innerText = '-';
         }
     }
-
     async function openStoryModal() {
         const modalBody = document.getElementById('storyModalBody');
         document.getElementById('storyModal').style.display = 'flex';
