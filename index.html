@@ -64,6 +64,10 @@
         .detail-row { margin-bottom: 7px; display: flex; gap: 8px; }
         .detail-label { font-weight: bold; color: var(--primary); min-width: 72px; flex-shrink: 0; }
         .detail-content { white-space: pre-line; word-break: keep-all; overflow-wrap: break-word; }
+        .hl-bold { font-weight: bold; color: #111; }
+        .hl-red { font-weight: bold; color: #d93025; }
+        .hl-blue { font-weight: bold; color: #1a73e8; }
+        .hl-green { font-weight: bold; color: #1b6b3a; }
         .call-link { color: var(--primary); font-weight: bold; text-decoration: none; border-bottom: 1px dotted var(--primary); }
 
         .calendar-box { background: white; border-radius: 12px; padding: 12px 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; }
@@ -406,7 +410,7 @@
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
     document.getElementById('printDateDisplay').innerText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
 
-    // HTML 특수문자 이스케이프 (엑셀 내용 중 <, >, & 기호로 인한 레이아웃 깨짐 방지)
+    // HTML 특수문자 이스케이프
     function escapeHtml(str) {
         return String(str ?? '')
             .replace(/&/g, '&amp;')
@@ -414,6 +418,23 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+
+    // 엑셀 텍스트 강조 규칙 변환 (**굵게**, [빨강]...[/빨강], [파랑]...[/파랑], [초록]...[/초록])
+    function formatRichText(str) {
+        let safe = escapeHtml(str);
+        safe = safe.replace(/\*\*(.+?)\*\*/g, '<span class="hl-bold">$1</span>');
+        safe = safe.replace(/\[빨강\](.+?)\[\/빨강\]/gs, '<span class="hl-red">$1</span>');
+        safe = safe.replace(/\[파랑\](.+?)\[\/파랑\]/gs, '<span class="hl-blue">$1</span>');
+        safe = safe.replace(/\[초록\](.+?)\[\/초록\]/gs, '<span class="hl-green">$1</span>');
+        return safe;
+    }
+
+    // 검색 시 강조 기호를 제거한 순수 텍스트 반환
+    function stripHighlightTags(str) {
+        return String(str ?? '')
+            .replace(/\*\*(.+?)\*\*/g, '$1')
+            .replace(/\[(빨강|파랑|초록)\](.+?)\[\/\1\]/gs, '$2');
     }
 
     // Cloudflare Workers + KV 연동 방문자 카운터 (새로고침 중복 집계 방지 포함)
@@ -625,10 +646,10 @@
                 <div class="card-title">${escapeHtml(p.title)}</div>
                 <div class="card-period">🗓️ 신청기간: ${escapeHtml(p.startStr)} ~ ${escapeHtml(p.endStr)}</div>
                 <div class="details">
-                    <div class="detail-row"><span class="detail-label">신청자격</span><span class="detail-content">${escapeHtml(p.target)}</span></div>
-                    <div class="detail-row"><span class="detail-label">세부내용</span><span class="detail-content">${escapeHtml(p.content)}</span></div>
-                    <div class="detail-row"><span class="detail-label">지참서류</span><span class="detail-content">${escapeHtml(p.docs)}</span></div>
-                    <div class="detail-row"><span class="detail-label">접수방법</span><span class="detail-content">${escapeHtml(p.note)}</span></div>
+                    <div class="detail-row"><span class="detail-label">신청자격</span><span class="detail-content">${formatRichText(p.target)}</span></div>
+                    <div class="detail-row"><span class="detail-label">세부내용</span><span class="detail-content">${formatRichText(p.content)}</span></div>
+                    <div class="detail-row"><span class="detail-label">지참서류</span><span class="detail-content">${formatRichText(p.docs)}</span></div>
+                    <div class="detail-row"><span class="detail-label">접수방법</span><span class="detail-content">${formatRichText(p.note)}</span></div>
                     ${phoneHtml}
                 </div>
             </div>
@@ -644,7 +665,7 @@
             const matchKeyword = !keyword
                 || p.title.toLowerCase().includes(keyword)
                 || p.category.toLowerCase().includes(keyword)
-                || p.content.toLowerCase().includes(keyword);
+                || stripHighlightTags(p.content).toLowerCase().includes(keyword);
             return matchStatus && matchKeyword;
         });
 
