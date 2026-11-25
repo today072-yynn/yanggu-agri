@@ -420,19 +420,36 @@
             .replace(/'/g, '&#39;');
     }
 
-    // 엑셀 텍스트 강조 규칙 변환 (**굵게**, [빨강]...[/빨강], [파랑]...[/파랑], [초록]...[/초록])
+    // 엑셀 텍스트 강조 및 줄 앞 들여쓰기 변환
+    // 예: [들여쓰기:2]내용, **굵게**, [빨강]...[/빨강], [파랑]...[/파랑], [초록]...[/초록]
     function formatRichText(str) {
-        let safe = escapeHtml(str);
-        safe = safe.replace(/\*\*(.+?)\*\*/g, '<span class="hl-bold">$1</span>');
-        safe = safe.replace(/\[빨강\](.+?)\[\/빨강\]/gs, '<span class="hl-red">$1</span>');
-        safe = safe.replace(/\[파랑\](.+?)\[\/파랑\]/gs, '<span class="hl-blue">$1</span>');
-        safe = safe.replace(/\[초록\](.+?)\[\/초록\]/gs, '<span class="hl-green">$1</span>');
-        return safe;
+        const lines = String(str ?? '').split(/\r?\n/);
+
+        return lines.map(line => {
+            let indentStyle = '';
+            const indentMatch = line.match(/^\[들여쓰기:(\d+)\](.*)$/);
+            let targetLine = line;
+
+            if (indentMatch) {
+                const spaces = Math.min(Math.max(parseInt(indentMatch[1], 10), 1), 20);
+                indentStyle = ` style="display:inline-block; padding-left:${spaces * 0.7}em;"`;
+                targetLine = indentMatch[2];
+            }
+
+            let formatted = escapeHtml(targetLine)
+                .replace(/\*\*(.+?)\*\*/g, '<span class="hl-bold">$1</span>')
+                .replace(/\[빨강\](.+?)\[\/빨강\]/gs, '<span class="hl-red">$1</span>')
+                .replace(/\[파랑\](.+?)\[\/파랑\]/gs, '<span class="hl-blue">$1</span>')
+                .replace(/\[초록\](.+?)\[\/초록\]/gs, '<span class="hl-green">$1</span>');
+
+            return indentStyle ? `<span${indentStyle}>${formatted}</span>` : formatted;
+        }).join('\n');
     }
 
-    // 검색 시 강조 기호를 제거한 순수 텍스트 반환
+    // 검색 시 들여쓰기·강조 기호를 제거한 순수 텍스트 반환
     function stripHighlightTags(str) {
         return String(str ?? '')
+            .replace(/^\[들여쓰기:\d+\]/gm, '')
             .replace(/\*\*(.+?)\*\*/g, '$1')
             .replace(/\[(빨강|파랑|초록)\](.+?)\[\/\1\]/gs, '$2');
     }
