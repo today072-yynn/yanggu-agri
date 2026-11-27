@@ -240,8 +240,25 @@
         @media print {
             @page { margin: 8mm; }
             body { background-color: white; padding: 0; }
-            header, .view-switch, .tabs, .search-box, #calSelectedArea, .cal-nav, .footer-copyright { display: none !important; }
+            header, .view-switch, .tabs, .search-box, #calSelectedArea, .cal-nav, .footer-copyright, .status-badge { display: none !important; }
             .container { max-width: 100% !important; padding: 0; margin: 0; }
+
+            /* 상단 제목 부각 */
+            .print-header {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #f4fbf7;
+                border-top: 3px solid #1b6b3a;
+                border-bottom: 2px solid #1b6b3a;
+                padding: 8px 12px;
+                margin-bottom: 12px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .print-logo-box { display: flex; align-items: center; gap: 8px; }
+            .print-header-title { font-size: 1.35rem; font-weight: bold; color: #1b6b3a; letter-spacing: -0.4px; }
+            .print-date { font-size: 0.9rem; color: #333; font-weight: bold; }
 
             /* 목록 보기 인쇄 스타일 */
             .card {
@@ -258,7 +275,8 @@
             .card.urgent { border-left-color: var(--urgent); }
             .card.upcoming { border-left-color: var(--upcoming); }
             .card.closed { border-left-color: var(--closed); opacity: 1; }
-            .status-badge, .category {
+            .card-title { font-size: 1.28rem; font-weight: bold; color: #111; margin-bottom: 6px; }
+            .category {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -266,20 +284,8 @@
             /* 달력 보기 인쇄 스타일 */
             .calendar-box { box-shadow: none; padding: 0; border: none; margin: 0 0 6px 0; }
 
-            .print-header {
-                display: flex !important;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 2px solid #1b6b3a;
-                padding-bottom: 5px;
-                margin-bottom: 10px;
-            }
-            .print-logo-box { display: flex; align-items: center; gap: 6px; }
-            .print-header-title { font-size: 1.1rem; font-weight: bold; color: #1b6b3a; }
-            .print-date { font-size: 0.85rem; color: #555; font-weight: bold; }
-
             .cal-header { margin-bottom: 6px; }
-            .cal-title { font-size: 1rem; }
+            .cal-title { font-size: 1.05rem; }
             .cal-week { min-height: 68px; break-inside: avoid; }
             .cal-events-layer { padding-top: 20px; padding-bottom: 3px; row-gap: 1px; }
             .cal-span-bar { font-size: 0.64rem !important; padding: 1.5px 2.5px; }
@@ -333,7 +339,7 @@
     <div id="listViewSection">
         <div class="print-header">
             <div class="print-logo-box">
-                <span style="font-size: 1.1rem;">🌾</span>
+                <span style="font-size: 1.25rem;">🌾</span>
                 <span class="print-header-title" id="listPrintTitle">양구읍 농업지원사업 안내 (접수중)</span>
             </div>
             <div class="print-date" id="listPrintDateDisplay">인쇄일: 2026.11.27</div>
@@ -366,7 +372,7 @@
     <div id="calendarViewSection" style="display: none;">
         <div class="print-header">
             <div class="print-logo-box">
-                <span style="font-size: 1.1rem;">🌾</span>
+                <span style="font-size: 1.25rem;">🌾</span>
                 <span class="print-header-title">양구읍 농업지원사업 안내</span>
             </div>
             <div class="print-date" id="printDateDisplay">인쇄일: 2026.11.27</div>
