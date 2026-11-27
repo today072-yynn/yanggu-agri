@@ -38,9 +38,10 @@
         .view-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 8px; font-size: 0.98rem; font-weight: bold; color: #555; cursor: pointer; transition: 0.2s; }
         .view-btn.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
 
-        .tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
-        .tab-btn { flex: 1; min-width: 82px; padding: 9px 6px; border: 1px solid #dadce0; background: white; border-radius: 8px; font-size: 0.9rem; font-weight: bold; color: #5f6368; cursor: pointer; text-align: center; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; align-items: center; }
+        .tab-btn { flex: 1; min-width: 78px; padding: 9px 6px; border: 1px solid #dadce0; background: white; border-radius: 8px; font-size: 0.9rem; font-weight: bold; color: #5f6368; cursor: pointer; text-align: center; white-space: nowrap; }
         .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .list-print-btn { flex: 0 0 auto; padding: 9px 12px; border: 1px solid var(--primary); background: var(--primary); color: white; border-radius: 8px; font-size: 0.88rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
 
         .search-box { width: 100%; padding: 11px 14px; border: 1px solid #dadce0; border-radius: 8px; font-size: 0.98rem; margin-bottom: 14px; background: white; }
 
@@ -239,9 +240,30 @@
         @media print {
             @page { margin: 8mm; }
             body { background-color: white; padding: 0; }
-            header, .view-switch, #listViewSection, #calSelectedArea, .cal-nav, .footer-copyright { display: none !important; }
+            header, .view-switch, .tabs, .search-box, #calSelectedArea, .cal-nav, .footer-copyright { display: none !important; }
             .container { max-width: 100% !important; padding: 0; margin: 0; }
-            #calendarViewSection { display: block !important; }
+
+            /* 목록 보기 인쇄 스타일 */
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                border-left: 5px solid var(--primary);
+                padding: 12px 14px;
+                margin-bottom: 10px;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .card.urgent { border-left-color: var(--urgent); }
+            .card.upcoming { border-left-color: var(--upcoming); }
+            .card.closed { border-left-color: var(--closed); opacity: 1; }
+            .status-badge, .category {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* 달력 보기 인쇄 스타일 */
             .calendar-box { box-shadow: none; padding: 0; border: none; margin: 0 0 6px 0; }
 
             .print-header {
@@ -250,7 +272,7 @@
                 align-items: center;
                 border-bottom: 2px solid #1b6b3a;
                 padding-bottom: 5px;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
             }
             .print-logo-box { display: flex; align-items: center; gap: 6px; }
             .print-header-title { font-size: 1.1rem; font-weight: bold; color: #1b6b3a; }
@@ -272,6 +294,10 @@
                 padding: 10px 14px;
                 margin-top: 10px;
                 background-color: #f9fbf9;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .print-qr-img { width: 102px; height: 102px; }
             .print-qr-text h4 { font-size: 0.98rem; color: #1b6b3a; margin-bottom: 3px; font-weight: bold; }
@@ -305,17 +331,34 @@
 
     <!-- 1. 목록 보기 영역 -->
     <div id="listViewSection">
+        <div class="print-header">
+            <div class="print-logo-box">
+                <span style="font-size: 1.1rem;">🌾</span>
+                <span class="print-header-title" id="listPrintTitle">양구읍 농업지원사업 안내 (접수중)</span>
+            </div>
+            <div class="print-date" id="listPrintDateDisplay">인쇄일: 2026.11.27</div>
+        </div>
+
         <div class="tabs">
             <button class="tab-btn active" onclick="filterStatus('open', this)">🟢 접수중 (<span id="count-open">0</span>)</button>
             <button class="tab-btn" onclick="filterStatus('upcoming', this)">🟡 신청예정 (<span id="count-upcoming">0</span>)</button>
             <button class="tab-btn" onclick="filterStatus('closed', this)">⚪ 마감 (<span id="count-closed">0</span>)</button>
             <button class="tab-btn" onclick="filterStatus('all', this)">전체 (<span id="count-all">0</span>)</button>
+            <button class="list-print-btn" onclick="printListView()">🖨️ 목록 인쇄</button>
         </div>
 
         <input type="text" class="search-box" id="searchInput" placeholder="사업명이나 키워드 검색 (예: 직불금, 비료, 농기계)" oninput="renderCards()">
 
         <div id="cardList">
             <div class="empty-msg">사업 목록을 불러오고 있습니다...</div>
+        </div>
+
+        <div class="print-footer">
+            <img src="./yg-nong-QR.jpg" alt="농업지원사업 안내 QR코드" class="print-qr-img">
+            <div class="print-qr-text">
+                <h4>🌾 "농업 지원사업, 시기를 놓치지 마세요!"</h4>
+                <p>• 본 자료는 인쇄된 날짜 기준으로 작성되었습니다.<br>• 사업별 마감일과 추가되는 최신 정보는 핸드폰 카메라로 QR코드를 비춰보시면 실시간으로 바로 확인하실 수 있습니다. (문의: 양구읍사무소 산업팀)</p>
+            </div>
         </div>
     </div>
 
@@ -326,7 +369,7 @@
                 <span style="font-size: 1.1rem;">🌾</span>
                 <span class="print-header-title">양구읍 농업지원사업 안내</span>
             </div>
-            <div class="print-date" id="printDateDisplay">인쇄일: 2026.11.18</div>
+            <div class="print-date" id="printDateDisplay">인쇄일: 2026.11.27</div>
         </div>
 
         <div class="calendar-box">
@@ -407,8 +450,23 @@
         { bg: '#efebe9', text: '#3e2723', border: '#5d4037' }
     ];
 
+    const printDateText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
     document.getElementById('todayDisplay').innerText = `📅 오늘 날짜: ${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 기준`;
-    document.getElementById('printDateDisplay').innerText = `인쇄일: ${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
+    document.getElementById('printDateDisplay').innerText = printDateText;
+    document.getElementById('listPrintDateDisplay').innerText = printDateText;
+
+    // 목록 인쇄 시 현재 선택된 탭명을 인쇄 제목에 반영 후 인쇄 실행
+    function printListView() {
+        const filterNames = {
+            open: '접수중',
+            upcoming: '신청예정',
+            closed: '마감',
+            all: '전체'
+        };
+        const label = filterNames[currentFilter] || '목록';
+        document.getElementById('listPrintTitle').innerText = `양구읍 농업지원사업 안내 (${label})`;
+        window.print();
+    }
 
     // HTML 특수문자 이스케이프
     function escapeHtml(str) {
